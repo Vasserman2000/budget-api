@@ -9,19 +9,9 @@ MongoClient.connect(connectionUrl, { useNewUrlParser: true, useUnifiedTopology: 
         return console.log('Unable to connect to database!')
     }
 
-    client.db().admin().listDatabases({ nameOnly: true }, async (err, result) => {
-        if (!err) {
-            for (db of result.databases) {
-                console.log('Database: ' + db.name);
+    const db = client.db(databaseName)
 
-                const cols = await client.db(db.name).listCollections().toArray();
-
-                for (col of cols) {
-                    console.log('--Collection: ' + col.name)
-                }
-            };
-        } else {
-            return console.log(err.message);
-        }
-    });
+    console.log(db.collection('spendings').countDocuments({}, (error, count) => {
+        console.log(count)
+    }));
 })
