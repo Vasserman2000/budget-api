@@ -1,4 +1,5 @@
 const mongodb = require('mongodb')
+const chalk = require('chalk')
 const MongoClient = mongodb.MongoClient
 
 const connectionUrl = 'mongodb://127.0.0.1:27017'
@@ -11,7 +12,26 @@ MongoClient.connect(connectionUrl, { useNewUrlParser: true, useUnifiedTopology: 
 
     const db = client.db(databaseName)
 
-    console.log(db.collection('spendings').countDocuments({}, (error, count) => {
-        console.log(count)
-    }));
+    db.collection('spendings').countDocuments({}, (error, count) => {
+        console.log(chalk.blue("Total number of docs: " + count))
+    });
+
+    db.collection('spendings').findOne({}, (err, doc) => {
+        console.log(doc.seller)
+    })
+
+    // db.collection('spendings').find({"seller": 'Super Ifrach'}).toArray((err, res) => {
+    //     console.log(res)
+    // })
+
+    // insert a doc
+    // db.collection('spendings').insertOne({
+    //     test: "testing insertion",
+    //     author: "Elisha Vasserman"
+    // }, (error,result) => {
+    //     if (error){
+    //         return console.log('Unable to insert')
+    //     }
+    //     console.log(result.ops)
+    // })
 })
