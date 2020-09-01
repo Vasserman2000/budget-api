@@ -1,4 +1,5 @@
 const mongodb = require('mongodb')
+const chalk = require('chalk')
 const MongoClient = mongodb.MongoClient
 
 const connectionUrl = 'mongodb://127.0.0.1:27017'
@@ -9,19 +10,28 @@ MongoClient.connect(connectionUrl, { useNewUrlParser: true, useUnifiedTopology: 
         return console.log('Unable to connect to database!')
     }
 
-    client.db().admin().listDatabases({ nameOnly: true }, async (err, result) => {
-        if (!err) {
-            for (db of result.databases) {
-                console.log('Database: ' + db.name);
+    const db = client.db(databaseName)
 
-                const cols = await client.db(db.name).listCollections().toArray();
-
-                for (col of cols) {
-                    console.log('--Collection: ' + col.name)
-                }
-            };
-        } else {
-            return console.log(err.message);
-        }
+    db.collection('spendings').countDocuments({}, (error, count) => {
+        console.log(chalk.blue("Total number of docs: " + count))
     });
+
+    db.collection('spendings').findOne({}, (err, doc) => {
+        console.log(doc.seller)
+    })
+
+    // db.collection('spendings').find({"seller": 'Super Ifrach'}).toArray((err, res) => {
+    //     console.log(res)
+    // })
+
+    // insert a doc
+    // db.collection('spendings').insertOne({
+    //     test: "testing insertion",
+    //     author: "Elisha Vasserman"
+    // }, (error,result) => {
+    //     if (error){
+    //         return console.log('Unable to insert')
+    //     }
+    //     console.log(result.ops)
+    // })
 })
